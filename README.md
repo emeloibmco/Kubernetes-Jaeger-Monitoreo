@@ -1,5 +1,7 @@
 # Kubernetes Jaeger Monitoreo :tophat::mag_right::bar_chart:
-Jaeger es un sistema de software open source que sirve para detectar operaciones entre los servicios distribuidos. Se utiliza para supervisar entornos complejos de microservicios y solucionar los problemas asociados a ellos.  
+Jaeger es un sistema de software open source que sirve para detectar operaciones entre los servicios distribuidos. Se utiliza para supervisar entornos complejos de microservicios y solucionar los problemas asociados a ellos. 
+
+En esta guía se instala el Operador de Jaeger, recomendado para ambientes de producción y se prueba su funcionalidad de monitoreo para aplicaciones de Python, NodeJS y Java.
 <br />
 
 ## Tabla de contenido 📑
@@ -67,12 +69,17 @@ Por ahora el unico servicio que debe ver es el de Jaeger Query, ahora procederem
 ## Implementación y monitoreo de una aplicación de prueba en Python :1234:
 Dicha aplicación ha sido copiada del siguiente [tutorial](https://www.digitalocean.com/community/tutorials/how-to-implement-distributed-tracing-with-jaeger-on-kubernetes) y consiste en una aplicación sencilla que será un contador de visitas cuyo valor aumenta cada vez que se realiza un llamado al frontend. Para simular problemas de rendimiento, incluye una función de suspensión aleatoria que se ejecuta cada vez que el frontend envía una GET solicitud al backend. Esta aplicación además incluye la configuración necesaria de OpenTracing que necesita Jaeger para monitorear la aplicación. A continuación se detallan los pasos para desplegar la aplicación en el clúster de Kubernetes:
 
-1. Dirijase a la carpeta ```sammy-jaeger``` que se encuentra en la carpeta clonada de este repositorio. A continuación asegurese que haya iniciado sesión en DockerHub con el siguiente comando:
+1. Clone el repositorio de donde será tomada la aplicación:
+```
+git clone https://github.com/emeloibmco/Kubernetes-Jaeger-Monitoreo/sammy-jaeger.git
+```
+
+2. Dirijase a la carpeta ```sammy-jaeger``` que se encuentra en la carpeta clonada de este repositorio. A continuación asegurese que haya iniciado sesión en DockerHub con el siguiente comando:
 
 ```
 docker login --username=your_username --password=your_password
 ```
-2. Ejecute 
+3. Ejecute 
 
 ```
 nano ./frontend/deploy_frontend.yaml
@@ -84,7 +91,7 @@ O el comando que le permita editar el archivo. Cambie la dirección ```username`
  
  Pulse Ctrl+S para guardar los cambios. Y Ctrl+X para salir del editor. 
  
- 3. Ejecute 
+ 4. Ejecute 
 
 ```
 nano ./backend/deploy_backend.yaml
@@ -94,7 +101,7 @@ O el comando que le permita editar el archivo. Cambie la dirección ```username`
  <p align=center><img width="950" src=".github/console2.png"></p>
  <br />
  
- 4. A continuación se creará la imagen en Docker, ejecute los siguiente comandos:
+ 5. A continuación se creará la imagen en Docker, ejecute los siguiente comandos:
 (Recuerde cambiar username por su usuario de DockerHub)
 
 Para crear el backend:
@@ -110,14 +117,14 @@ docker build -t username/do-visit-counter-frontend:v2 ./frontend
 docker push username/do-visit-counter-frontend:v2
 
 ```
- 5. Ahora enviaremos la aplicación al clúster de kubernetes:
+ 6. Ahora enviaremos la aplicación al clúster de kubernetes:
  
  ```
 kubectl apply -f ./frontend/deploy_frontend.yaml
 kubectl apply -f ./backend/deploy_backend.yaml
 
  ```
-6. Para abrir la aplicación ejecute:
+7. Para abrir la aplicación ejecute:
 
 ```
 kubectl port-forward $(kubectl get pods -l=app="do-visit-counter-frontend" -o name) 8000:8000
@@ -126,7 +133,7 @@ kubectl port-forward $(kubectl get pods -l=app="do-visit-counter-frontend" -o na
  <p align=center><img width="950" src=".github/openapp.PNG"></p>
  <br />
  
-7. Abra la aplicación desde el browser con la dirección http://localhost:8000.
+8. Abra la aplicación desde el browser con la dirección http://localhost:8000.
 
  <p align=center><img width="700" src=".github/app.PNG"></p>
  <br />
@@ -136,12 +143,12 @@ En otra terminal no olvide estar corriendo la aplicación de Jaeger, abra la con
  <p align=center><img width="950" src=".github/jaeger.PNG"></p>
  <br />
 
-8. A continuación en otra terminal ejecute solicitudes a la aplicación para posteriormente observar el monitoreo.
+9. A continuación en otra terminal ejecute solicitudes a la aplicación para posteriormente observar el monitoreo.
 
 ```
 for i in 0 1 2 3 4 5 6 7 8 9; do curl localhost:8000; done
 ```
-9. Una vez concluido el ciclo del paso anterior, ingrese a la consola de Jaeger y complete lo siguiente:
+10. Una vez concluido el ciclo del paso anterior, ingrese a la consola de Jaeger y complete lo siguiente:
 
 * ```Service```: service
 * ```Operation```: Puede escoger cualquiera de los servicio de la aplicación ```hello_world``` o ```counter```. O en este caso escogeremos la opción ```all``` para visualizar ambos servicios.
@@ -158,18 +165,23 @@ Finalmente de click en ``` Find Traces``` para que se muestren los resultados. E
 ## Implementación y monitoreo de una aplicación de prueba en Java - NodeJs :a: :b:
 Dicha aplicación ha sido copiada del siguiente [tutorial](https://tracing.cloudnative101.dev/docs/ocp-jaeger.html) y consiste en una aplicación que consta de dos servicios (servicio-a y servicio-b), el servicio-a envia una petición de saludo al servicio-b el cual constesta el saludo con el parametro de nombre ingresado por el cliente al momentode realizar la solicitud al servicio-b, esta aplicación tambien incluye una función de suspensión que se ejecuta cada tres solicitudes realizadas al servicio-a. Esta aplicación además incluye la configuración necesaria de OpenTracing que necesita Jaeger para monitorear la aplicación. A continuación se detallan los pasos para desplegar la aplicación en el clúster de Kubernetes:
 
-1. Dirijase a la carpeta ```lab-jaeger-java``` o  ```lab-jaeger-nodejs```, dependiendo de cual de las dos quiera ejecutar, que se encuentra en la carpeta clonada de este repositorio. A continuación asegurese que haya iniciado sesión en DockerHub con el siguiente comando:
+1. Clone el repositorio de donde será tomada la aplicación:
+```
+git clone https://github.com/ibm-cloud-architecture/learning-distributed-tracing-101.git
+
+```
+2. Dirijase a la carpeta ```lab-jaeger-java``` o  ```lab-jaeger-nodejs```, dependiendo de cual de las dos quiera ejecutar, que se encuentra en la carpeta clonada de este repositorio. A continuación asegurese que haya iniciado sesión en DockerHub con el siguiente comando:
 
 ```
 docker login --username=your_username --password=your_password
 ```
-2. Ejecute 
+3. Ejecute 
 
 ```
 cd solution
 ```
  
- 3. A continuación se creará la imagen en Docker, ejecute los siguiente comandos:
+ 4. A continuación se creará la imagen en Docker, ejecute los siguiente comandos:
 (Recuerde cambiar username por su usuario de DockerHub)
 
 Para crear el servicio-a:
@@ -186,12 +198,12 @@ docker push username/service-b:v1
 
 ```
 
-4. Regrese a la carpeta principal del proyecto y ejecute:
+5. Regrese a la carpeta principal del proyecto y ejecute:
 
 ```
 cd lab-jaeger-ocp
 ```
-5. A continuación, ejecute el siguiente comando para editar el archivo de configuración ```jaeger-java.yaml``` o ```jaeger-nodejs.yaml```:
+6. A continuación, ejecute el siguiente comando para editar el archivo de configuración ```jaeger-java.yaml``` o ```jaeger-nodejs.yaml```:
 
 ```
 nano jaeger-nodejs.yaml
@@ -208,13 +220,13 @@ Una vez ingrese al archivo cambie el ```username``` por su usuario de DockerHub,
 
 Pulse Ctrl+S para guardar los cambios. Y Ctrl+X para salir del editor. 
 
-6. Ahora enviaremos la aplicación al clúster de kubernetes:
+7. Ahora enviaremos la aplicación al clúster de kubernetes:
  
  ```
 kubectl apply -f ./jaeger-nodejs.yaml
 
  ```
-7. Para abrir la aplicación ejecute:
+8. Para abrir la aplicación ejecute:
 
 ```
 kubectl port-forward $(kubectl get pods -l=app="service-a" -o name) 8080:8080
@@ -223,7 +235,7 @@ kubectl port-forward $(kubectl get pods -l=app="service-a" -o name) 8080:8080
  <p align=center><img width="950" src=".github/openapp2.PNG"></p>
  <br />
  
-7. Abra la aplicación desde el browser con la dirección http://localhost:8080/sayHello/nombre.
+9. Abra la aplicación desde el browser con la dirección http://localhost:8080/sayHello/nombre.
 
  <p align=center><img width="700" src=".github/app2.PNG"></p>
  <br />
@@ -234,7 +246,7 @@ En otra terminal no olvide estar corriendo la aplicación de Jaeger, abra la con
  <br />
 
 
-8. A continuación ejecute una solicitud de error:
+10. A continuación ejecute una solicitud de error:
 ```
  curl http://localhost:8080/error -I HTTP/1.1 500
 ```
@@ -245,7 +257,7 @@ En otra terminal no olvide estar corriendo la aplicación de Jaeger, abra la con
 
  
  
-9. Ejecute el siguiente ciclo para enviar varias solicitudes a la aplicación:
+11. Ejecute el siguiente ciclo para enviar varias solicitudes a la aplicación:
 
 ```
 for i in 0 1 2 3 4 5 6 7 8 9; do curl localhost:8080/sayHello/<nombre>; done
@@ -255,14 +267,16 @@ Una vez concluido el ciclo anterior, ingrese a la consola de Jaeger y visualice 
  <p align=center><img width="950" src=".github/jaeger3.gif"></p>
  <br />
 
- 10. Finalmente en la consola de Jaeger, ingrese a System Architecure > DAG y visualice la arquitectura de la aplicación.
+ 12. Finalmente en la consola de Jaeger, ingrese a System Architecure > DAG y visualice la arquitectura de la aplicación.
  
  <p align=center><img width="950" src=".github/jaeger4.PNG"></p>
  <br />
  
  ## Referencias :mag:
 
-- [Documentación Kiali](https://istio.io/docs/tasks/observability/kiali/)
+- [Operador Jaeger](https://www.jaegertracing.io/docs/1.26/operator/)
+- [How To Implement Distributed Tracing with Jaeger on Kubernetes ](https://www.digitalocean.com/community/tutorials/how-to-implement-distributed-tracing-with-jaeger-on-kubernetes)
+- [Using Jaeger in OpenShift/Kubernetes](https://tracing.cloudnative101.dev/docs/ocp-jaeger.html)
 
 
 
