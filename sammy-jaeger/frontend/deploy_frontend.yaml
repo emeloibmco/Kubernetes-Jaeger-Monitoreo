@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: do-visit-counter-frontend
-          image: paula2298/do-visit-counter-frontend:v2
+          image: username/do-visit-counter-frontend:v2
           imagePullPolicy: Always
           env:
             - name: COUNTER_ENDPOINT
