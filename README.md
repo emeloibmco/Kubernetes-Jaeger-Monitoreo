@@ -1,15 +1,15 @@
-# Kubernetes-Jaeger-Monitoreo :tophat:
-Jaeger es un sistema de software open source que sirve para detectar operaciones entre los servicios distribuidos. Se utiliza para supervisar entornos complejos de microservicios y solucionar los problemas asociados a ellos. 
+# Kubernetes-Jaeger-Monitoreo :tophat::mag_right::bar_chart:
+Jaeger es un sistema de software open source que sirve para detectar operaciones entre los servicios distribuidos. Se utiliza para supervisar entornos complejos de microservicios y solucionar los problemas asociados a ellos.  
 <br />
 
 ## Tabla de contenido 📑
 
 1. [Requisitos](#Requisitos-newspaper)
-2. [Instalación del operador de Jaeger](#Instalación-del-operador-de-Jaeger)
-3. [Implementación y monitoreo de una aplicación de prueba en Python](#Implementación-y-monitoreo-de-una-aplicación-de-prueba-en-Python)
-4. [Implementación y monitoreo de una aplicación de prueba en Java - NodeJS](#Implementación-y-monitoreo-de-una-aplicación-de-prueba-en-Java---NodeJS)
+2. [Instalación del operador de Jaeger](#Instalación-del-operador-de-Jaeger-computer)
+3. [Implementación y monitoreo de una aplicación de prueba en Python](#Implementación-y-monitoreo-de-una-aplicación-de-prueba-en-Python-1234)
+4. [Implementación y monitoreo de una aplicación de prueba en Java - NodeJS](#Implementación-y-monitoreo-de-una-aplicación-de-prueba-en-Java---NodeJS-a-b)
 5. [Referencias](#Referencias-mag)
-6-.[Autores](#Autores-black_nib)
+6. [Autores](#Autores-black_nib)
 
 ## Requisitos :newspaper:
 - Tener un servicio **[Kubernetes Cluster (IKS)](https://cloud.ibm.com/kubernetes/clusters)** disponible en la cuenta IBM Cloud.
@@ -22,7 +22,7 @@ Jaeger es un sistema de software open source que sirve para detectar operaciones
 - Complemento [container-service/kubernetes-service](https://cloud.ibm.com/docs/cli?topic=cli-install-devtools-manually) para ibmcloud CLI. `ibmcloud plugin install container-service/kubernetes-service`.
 - Tener instalado git.
 
-## Instalación del operador de Jaeger
+## Instalación del operador de Jaeger :computer:
 
 Para trabaja Jaeger en un ambiente de producción, lo más recomendable es instalar el operador Jaeger, a continuación se detallan los pasos para instalar Jaeger en su clúster de Kubernetes, utilizando las plantillas utilizadas en la documentación oficial de Jaeger:
 
@@ -64,7 +64,7 @@ kubectl port-forward $(kubectl get pods -l=app="jaeger" -o name) 16686:16686
 Por ahora el unico servicio que debe ver es el de Jaeger Query, ahora procederemos a implementar la aplicación que deseamos monitorear.
  
 
-## Implementación y monitoreo de una aplicación de prueba en Python
+## Implementación y monitoreo de una aplicación de prueba en Python :1234:
 Dicha aplicación ha sido copiada del siguiente [tutorial](https://www.digitalocean.com/community/tutorials/how-to-implement-distributed-tracing-with-jaeger-on-kubernetes) y consiste en una aplicación sencilla que será un contador de visitas cuyo valor aumenta cada vez que se realiza un llamado al frontend. Para simular problemas de rendimiento, incluye una función de suspensión aleatoria que se ejecuta cada vez que el frontend envía una GET solicitud al backend. Esta aplicación además incluye la configuración necesaria de OpenTracing que necesita Jaeger para monitorear la aplicación. A continuación se detallan los pasos para desplegar la aplicación en el clúster de Kubernetes:
 
 1. Dirijase a la carpeta ```sammy-jaeger``` que se encuentra en la carpeta clonada de este repositorio. A continuación asegurese que haya iniciado sesión en DockerHub con el siguiente comando:
@@ -155,7 +155,7 @@ Finalmente de click en ``` Find Traces``` para que se muestren los resultados. E
  <p align=center><img width="950" src=".github/monitoreo.gif"></p>
  <br />
 
-## Implementación y monitoreo de una aplicación de prueba en Java - NodeJs
+## Implementación y monitoreo de una aplicación de prueba en Java - NodeJs :a: :b:
 Dicha aplicación ha sido copiada del siguiente [tutorial](https://tracing.cloudnative101.dev/docs/ocp-jaeger.html) y consiste en una aplicación que consta de dos servicios (servicio-a y servicio-b), el servicio-a envia una petición de saludo al servicio-b el cual constesta el saludo con el parametro de nombre ingresado por el cliente al momentode realizar la solicitud al servicio-b, esta aplicación tambien incluye una función de suspensión que se ejecuta cada tres solicitudes realizadas al servicio-a. Esta aplicación además incluye la configuración necesaria de OpenTracing que necesita Jaeger para monitorear la aplicación. A continuación se detallan los pasos para desplegar la aplicación en el clúster de Kubernetes:
 
 1. Dirijase a la carpeta ```lab-jaeger-java``` o  ```lab-jaeger-nodejs```, dependiendo de cual de las dos quiera ejecutar, que se encuentra en la carpeta clonada de este repositorio. A continuación asegurese que haya iniciado sesión en DockerHub con el siguiente comando:
