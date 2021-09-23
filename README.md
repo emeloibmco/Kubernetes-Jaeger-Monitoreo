@@ -1,4 +1,4 @@
-# Kubernetes-Jaeger-Monitoreo :tophat::mag_right::bar_chart:
+# Kubernetes Jaeger Monitoreo :tophat::mag_right::bar_chart:
 Jaeger es un sistema de software open source que sirve para detectar operaciones entre los servicios distribuidos. Se utiliza para supervisar entornos complejos de microservicios y solucionar los problemas asociados a ellos.  
 <br />
 
